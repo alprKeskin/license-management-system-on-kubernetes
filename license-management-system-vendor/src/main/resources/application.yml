@@ -1,0 +1,9 @@
+server:
+  port: 8080
+
+license:
+  file:
+    key:
+      public: "public_key.txt"
+    digital:
+      signature: "signature.txt"

@@ -1,0 +1,19 @@
+server:
+  port: 8081
+
+license:
+  key:
+    file:
+      public: "public_key.txt"
+  pod:
+    name: "pod-name"
+    namespace: "pod-namespace"
+  label:
+    node:
+      master: "node-role.kubernetes.io/control-plane"
+  secret:
+    public-key:
+      secret-name: "public-key-secret"
+      secret-label: "public-key-label"
+      data:
+        key: "public-key"
