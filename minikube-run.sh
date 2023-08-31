@@ -1,0 +1,41 @@
+# minikube-run.sh
+# arg1: version-number
+clear;
+echo "license-management-system-customer-image:v$1 is being created...";
+docker build -t license-management-system-customer-image:v$1 -f ./license-management-system-customer/Dockerfile .;
+echo "license-management-system-customer-image:v$1 has been created...";
+echo "licensed-service-image:v$1 is being created...";
+docker build -t licensed-service-image:v$1 -f ./licensed-service/Dockerfile .;
+echo "licensed-service-image:v$1 has been created...";
+minikube image ls --format table;
+echo "Images are being loaded into minikube...";
+minikube image load license-management-system-customer-image:v$1;
+minikube image load licensed-service-image:v$1;
+echo "Images have been loaded to the minikube.";
+minikube image ls --format table;
+echo "Creating deployment...";
+kubectl apply -f ./minikube-configurations/deployment.yaml;
+echo "Deployment has been created.";
+echo "Creating services...";
+kubectl apply -f ./minikube-configurations/license-management-system-customer/service.yaml;
+kubectl apply -f ./minikube-configurations/licensed-service/service.yaml;
+echo "Services created."
+echo "Applying role services...";
+kubectl apply -f ./minikube-configurations/roles/node-role.yaml;
+kubectl apply -f ./minikube-configurations/roles/node-role-binding.yaml;
+kubectl apply -f ./minikube-configurations/roles/pod-role.yaml;
+kubectl apply -f ./minikube-configurations/roles/pod-role-binding.yaml;
+kubectl apply -f ./minikube-configurations/roles/secret-role.yaml;
+kubectl apply -f ./minikube-configurations/roles/secret-role-binding.yaml;
+kubectl apply -f ./minikube-configurations/roles/deployment-role.yaml;
+kubectl apply -f ./minikube-configurations/roles/deployment-role-binding.yaml;
+echo "Checking Permissions...";
+kubectl auth can-i get nodes --as=system:serviceaccount:default:default;
+kubectl auth can-i list nodes --as=system:serviceaccount:default:default;
+kubectl auth can-i get pods --as=system:serviceaccount:default:default;
+kubectl auth can-i list pods --as=system:serviceaccount:default:default;
+kubectl auth can-i get secrets --as=system:serviceaccount:default:default;
+kubectl auth can-i list secrets --as=system:serviceaccount:default:default;
+kubectl auth can-i get deployments --as=system:serviceaccount:default:default;
+kubectl auth can-i delete deployments --as=system:serviceaccount:default:default;
+echo "Done";

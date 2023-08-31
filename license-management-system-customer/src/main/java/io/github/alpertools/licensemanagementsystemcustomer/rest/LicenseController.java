@@ -1,37 +1,15 @@
 package io.github.alpertools.licensemanagementsystemcustomer.rest;
 
-import io.fabric8.kubernetes.api.model.Secret;
-import io.fabric8.kubernetes.api.model.SecretBuilder;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClientBuilder;
-import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.github.alpertools.licensemanagementsystemcustomer.model.LicenseValidationRequest;
 import io.github.alpertools.licensemanagementsystemcustomer.model.UserInformation;
 import io.github.alpertools.licensemanagementsystemcustomer.service.LicenseService;
 import io.github.alpertools.licensemanagementsystemcustomer.service.SecretsService;
-import io.kubernetes.client.openapi.ApiClient;
-import io.kubernetes.client.openapi.ApiException;
-import io.kubernetes.client.openapi.Configuration;
-import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.auth.ApiKeyAuth;
-import io.kubernetes.client.openapi.models.V1ObjectMeta;
-import io.kubernetes.client.openapi.models.V1Secret;
-import io.kubernetes.client.util.ClientBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
-import java.util.Base64;
 
 @RestController
 @RequestMapping("/licensing")
@@ -93,8 +71,8 @@ public class LicenseController {
      */
     @PostMapping("/validate-license")
     public ResponseEntity<String> validateLicense(@RequestBody LicenseValidationRequest request) throws Exception {
-        if (licenseService.validateLicense(request)) return ResponseEntity.ok("The license has been successfully validated.");
-        return ResponseEntity.ok("The license is invalid.");
+        boolean isValidated = licenseService.validateLicense(request);
+        return ResponseEntity.ok(isValidated ? "The license is valid." : "The license is invalid.");
     }
 
     @PostMapping("/get-license-fingerprint")
@@ -105,6 +83,12 @@ public class LicenseController {
     // TEST
     @GetMapping("/delete-secret")
     public void deleteSecret() {
+        secretsService.deleteKubernetesSecret("digital-signature-secret");
+        secretsService.deleteKubernetesSecret("user-information-secret");
+    }
+
+    @GetMapping("/delete-public-key-secret")
+    public void deletePublicKeySecret() {
         secretsService.deleteKubernetesSecret("public-key-secret");
     }
 

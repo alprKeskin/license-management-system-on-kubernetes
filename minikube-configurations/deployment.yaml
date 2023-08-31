@@ -13,5 +13,7 @@ spec:
         app: license-management-system-customer-label
     spec:
       containers:
-        - name: license-management-system-customer
-          image: license-management-system-customer-image:v1
+      - name: licensed-service
+        image: licensed-service-image:v1
+      - name: license-management-system-customer
+        image: license-management-system-customer-image:v1

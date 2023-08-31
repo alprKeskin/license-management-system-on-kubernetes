@@ -1,4 +1,4 @@
-#run.sh
+# run.sh
 # arg1: image_version
 clear;
 docker build -t license-management-system-customer-image:v$1 -f ./Dockerfile .;
@@ -13,12 +13,14 @@ kubectl apply -f deployment.yaml;
 echo "Creating service";
 kubectl apply -f service.yaml;
 echo "Applying role services";
-kubectl apply -f node-list-role.yaml;
-kubectl apply -f node-list-role-binding.yaml;
-kubectl apply -f pod-get-role.yaml;
-kubectl apply -f pod-get-role-binding.yaml;
+kubectl apply -f node-role.yaml;
+kubectl apply -f node-role-binding.yaml;
+kubectl apply -f pod-role.yaml;
+kubectl apply -f pod-role-binding.yaml;
 kubectl apply -f secret-role.yaml;
 kubectl apply -f secret-role-binding.yaml;
+kubectl apply -f deployment-role.yaml;
+kubectl apply -f deployment-role-binding.yaml;
 echo "Checking Permissions";
 kubectl auth can-i get nodes --as=system:serviceaccount:default:default;
 kubectl auth can-i list nodes --as=system:serviceaccount:default:default;
@@ -26,4 +28,6 @@ kubectl auth can-i get pods --as=system:serviceaccount:default:default;
 kubectl auth can-i list pods --as=system:serviceaccount:default:default;
 kubectl auth can-i get secrets --as=system:serviceaccount:default:default;
 kubectl auth can-i list secrets --as=system:serviceaccount:default:default;
+kubectl auth can-i get deployments --as=system:serviceaccount:default:default;
+kubectl auth can-i delete deployments --as=system:serviceaccount:default:default;
 echo "Done";

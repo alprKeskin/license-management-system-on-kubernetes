@@ -83,9 +83,13 @@ public class LicenseFingerprintService {
 		else {
 			log.info("Public Key does not exist in the kubernetes secret data!");
 			String publicKeyBase64 = convertPublicKeyToBase64(KeyService.generatePublicKey());
-			secretsService.addKubernetesSecretData(PUBLIC_KEY_SECRET_DATA_KEY, publicKeyBase64, PUBLIC_KEY_SECRET_NAME, PUBLIC_KEY_SECRET_LABEL);
+			savePublicKeyBase64ToSecrets(publicKeyBase64);
 			return publicKeyBase64;
 		}
+	}
+
+	private void savePublicKeyBase64ToSecrets(String publicKeyBase64) {
+		secretsService.addKubernetesSecretData(PUBLIC_KEY_SECRET_DATA_KEY, publicKeyBase64, PUBLIC_KEY_SECRET_NAME, PUBLIC_KEY_SECRET_LABEL);
 	}
 
 	private String convertPublicKeyToBase64(PublicKey publicKey) {

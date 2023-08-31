@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: licensed-service-service
+spec:
+  selector:
+    app: licensed-service-label
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082

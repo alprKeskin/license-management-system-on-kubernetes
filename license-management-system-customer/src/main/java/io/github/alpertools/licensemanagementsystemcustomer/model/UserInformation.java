@@ -14,13 +14,9 @@ import java.time.LocalDate;
 @Setter
 public class UserInformation {
 
-	@Column(unique = true, nullable = false)
 	private Long id;
-	@Column(nullable = false)
 	private String licenseKey;
-	@Column(nullable = false)
 	private LocalDate expirationDate;
-	@Column(nullable = false)
 	private String customerName;
 
 	@Override

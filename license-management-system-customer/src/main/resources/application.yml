@@ -5,9 +5,8 @@ license:
   key:
     file:
       public: "public_key.txt"
-  pod:
-    name: "pod-name"
-    namespace: "pod-namespace"
+  deployment:
+    name: "license-management-system-customer-deployment"
   label:
     node:
       master: "node-role.kubernetes.io/control-plane"
@@ -17,3 +16,17 @@ license:
       secret-label: "public-key-label"
       data:
         key: "public-key"
+    digital-signature:
+      secret-name: "digital-signature-secret"
+      secret-label: "digital-signature-label"
+      data:
+        key: "digital-signature"
+    user-information:
+      secret-name: "user-information-secret"
+      secret-label: "user-information-label"
+      data:
+        key:
+          id: "id"
+          license-key: "license-key"
+          expiration-date: "expiration-date"
+          customer-name: "customer-name"

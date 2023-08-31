@@ -22,6 +22,11 @@ public class SecretsService {
         client = new KubernetesClientBuilder().build();
     }
 
+    public boolean isSecretInSecrets(String secretName) {
+        Secret secret = getKubernetesSecret(secretName);
+        return (secret != null);
+    }
+
     public boolean doesKubernetesSecretDataExist(String secretName, String secretDataKey) {
         Secret secret = getKubernetesSecret(secretName);
         if (secret == null) return false;
@@ -51,7 +56,9 @@ public class SecretsService {
     }
 
     public void deleteKubernetesSecret(String secretName) {
-        client.secrets().inNamespace(client.getNamespace()).withName(secretName).delete();
+        if (doesKubernetesSecretExist(secretName)) {
+            client.secrets().inNamespace(client.getNamespace()).withName(secretName).delete();
+        }
     }
 
     private Secret getKubernetesSecret(String secretName) {
